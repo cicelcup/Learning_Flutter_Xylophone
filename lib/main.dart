@@ -1,38 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.black // status bar color
+      ));
   runApp(MyApp());
 }
 
 class XylophoneButton {
   final String soundNote;
-  final Color buttonColor;
+  final MaterialColor buttonColor;
 
-  XylophoneButton(this.soundNote, this.buttonColor);
+  XylophoneButton({this.soundNote, this.buttonColor});
 }
 
 class MyApp extends StatelessWidget {
   final List<XylophoneButton> xylophone = List.generate(
     7,
     (index) => XylophoneButton(
-      "note${index + 1}.wav",
-      Colors.orange[(index + 1) * 100],
+      soundNote: "note${index + 1}.wav",
+      buttonColor: colors[index],
     ),
   );
+
+  static final List<MaterialColor> colors = [
+    Colors.orange,
+    Colors.blue,
+    Colors.red,
+    Colors.yellow,
+    Colors.green,
+    Colors.pink,
+    Colors.purple
+  ];
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("Play Audio Files"),
-        ),
+        backgroundColor: Colors.black,
         body: SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -40,14 +49,14 @@ class MyApp extends StatelessWidget {
             children: <Widget>[
               for (int i = 0; i < xylophone.length; i++)
                 Expanded(
-                  child: InkWell(
-                    onTap: () {
+                  child: FlatButton(
+                    child: Container(),
+                    color: xylophone[i].buttonColor,
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
                       final player = AudioCache();
                       player.play(xylophone[i].soundNote);
                     },
-                    child: Container(
-                      color: xylophone[i].buttonColor,
-                    ),
                   ),
                 ),
             ],
